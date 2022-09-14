@@ -2,20 +2,27 @@ import { useNavigate } from "react-router-dom"
 import { useField } from '../hooks/index'
 
 const AnecdoteForm = (props) => {
-  const content = useField('text')
-  const author = useField('text')
-  const info = useField('text')
+  const { reset: resetContent, ...content} = useField('text')
+  const { reset: resetAuthor, ...author} = useField('text')
+  const { reset: resetInfo, ...info} = useField('text')
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
       content: content.value,
-      author: content.author,
-      info: content.infor,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
     navigate('/')
+  }
+
+  const resetFields = (e) => {
+    e.preventDefault()
+    resetContent()
+    resetAuthor()
+    resetInfo()
   }
 
   return (
@@ -35,6 +42,7 @@ const AnecdoteForm = (props) => {
           <input { ...info } />
         </div>
         <button>create</button>
+        <button onClick={resetFields}>reset</button>
       </form>
     </div>
   )
