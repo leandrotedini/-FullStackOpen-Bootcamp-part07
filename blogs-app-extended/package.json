@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "description": "",
-  "workspaces":[
+  "workspaces": [
     "api",
     "app"
   ],
@@ -19,5 +19,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.8.5",
+    "react-redux": "^8.0.4"
+  }
 }

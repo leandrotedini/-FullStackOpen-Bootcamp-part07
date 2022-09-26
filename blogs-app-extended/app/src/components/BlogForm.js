@@ -1,12 +1,15 @@
 import React, { useState, useRef } from 'react'
-import blogService  from '../services/blogs'
+import { useDispatch } from 'react-redux'
+import { createBlogs } from '../features/blogs/blogsSlice'
+// import blogService  from '../services/blogs'
 import Togglable from './Togglable'
 
-const BlogForm = ({ addBlog }) => {
+const BlogForm = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const blogFormRef = useRef()
+  const dispatch = useDispatch()
 
   const handleCreateBlog = async (event) => {
     event.preventDefault()
@@ -14,8 +17,8 @@ const BlogForm = ({ addBlog }) => {
     const newBlog = { title, author, url }
 
     try {
-      const blog = await blogService.create(newBlog)
-      addBlog(blog)
+      // const blog = await blogService.create(newBlog)
+      dispatch(createBlogs(newBlog))
       setTitle('')
       setAuthor('')
       setUrl('')
