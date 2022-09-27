@@ -1,27 +1,17 @@
-import React, { useState, useEffect } from 'react'
-import blogService from './services/blogs'
+import React, { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { selectUser, logout } from './features/users/usersSlice'
 import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 
 const App = () => {
-  const [user, setUser] = useState(null)
   const [notificationMessage, setNotificationMessage] = useState({ message:null, success:null })
+  const dispatch = useDispatch()
+  const user = useSelector(selectUser)
 
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogListappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
-
-  const logout = () => {
-    window.localStorage.removeItem('loggedBlogListappUser')
-    setUser(null)
-    blogService.setToken('')
+  const userLogout = () => {
+    dispatch(logout())
   }
 
   const showNotification = ({ message, success }) => {
@@ -35,10 +25,10 @@ const App = () => {
     <div>
       <Notification message={notificationMessage.message} success={notificationMessage.success}/>
       {user === null
-        ? <LoginForm setUser={setUser} showNotification={showNotification}/>
+        ? <LoginForm showNotification={showNotification}/>
         : <>
           <p>{`${user.name} logged in`}</p>
-          <button onClick={logout}>Logout</button>
+          <button onClick={userLogout}>Logout</button>
           <BlogList user={user}/>
         </>
       }

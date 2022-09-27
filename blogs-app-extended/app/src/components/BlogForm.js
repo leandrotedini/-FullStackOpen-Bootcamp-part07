@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { createBlogs } from '../features/blogs/blogsSlice'
-// import blogService  from '../services/blogs'
 import Togglable from './Togglable'
 
 const BlogForm = () => {
@@ -17,7 +16,6 @@ const BlogForm = () => {
     const newBlog = { title, author, url }
 
     try {
-      // const blog = await blogService.create(newBlog)
       dispatch(createBlogs(newBlog))
       setTitle('')
       setAuthor('')
