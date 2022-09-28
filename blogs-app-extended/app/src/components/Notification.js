@@ -1,5 +1,20 @@
-import React from 'react'
-const Notification = ({ message, success }) => {
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { cleanNotification, selectNotification } from '../features/notification/notificationSlice'
+
+
+const Notification = () => {
+
+  const dispatch = useDispatch()
+  const { notification, success } = useSelector(selectNotification)
+
+  useEffect(() => {
+    if (notification !== ''){
+      setTimeout(() => {
+        dispatch(cleanNotification())
+      }, 5000)
+    }
+  }, [notification])
 
   const notificationStyle = {
     color: success ? 'green': 'red',
@@ -12,13 +27,11 @@ const Notification = ({ message, success }) => {
     marginBottom: 10
   }
 
-  if (message === null) {
-    return null
-  }
+  if (notification === '') return null
 
   return (
     <div style={notificationStyle}>
-      {message}
+      {notification}
     </div>
   )
 }

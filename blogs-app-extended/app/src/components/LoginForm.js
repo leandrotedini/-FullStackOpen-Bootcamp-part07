@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { loginUser } from '../features/users/usersSlice'
+import { setNotification } from '../features/notification/notificationSlice'
 
-const LoginForm = ({ showNotification }) => {
+
+const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
@@ -17,10 +19,10 @@ const LoginForm = ({ showNotification }) => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      showNotification({
+      dispatch(setNotification({
         message: `${exception.response.data.error}`,
         success: false
-      })
+      }))
     }
   }
 

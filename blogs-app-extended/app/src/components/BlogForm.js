@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { createBlogs } from '../features/blogs/blogsSlice'
+import { setNotification } from '../features/notification/notificationSlice'
 import Togglable from './Togglable'
 
 const BlogForm = () => {
@@ -17,16 +18,17 @@ const BlogForm = () => {
 
     try {
       dispatch(createBlogs(newBlog))
+      dispatch(setNotification({
+        notification: 'new blog created',
+        success: true
+      }))
+
       setTitle('')
       setAuthor('')
       setUrl('')
       blogFormRef.current.toggleVisibility()
     } catch (exception) {
-      // setErrorMessage('Wrong credentials')
-      // setTimeout(() => {
-      //   setErrorMessage(null)
-      // }, 5000)
-      console.log(exception)
+      dispatch(setNotification(exception))
     }
   }
 

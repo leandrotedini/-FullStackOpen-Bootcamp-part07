@@ -36,6 +36,5 @@ const blogsSlice = createSlice({
   }
 })
 
-// export const { getBlogs } = blogsSlice.actions
 export const selectAllBlogs = state => state.blogs.blogs
 export default blogsSlice.reducer

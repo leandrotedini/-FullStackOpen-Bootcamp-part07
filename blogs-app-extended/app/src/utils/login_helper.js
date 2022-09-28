@@ -11,8 +11,10 @@ export const setUserLocalStorage = (user) => {
 
 export const getUserLocalStorage = () => {
   const loggedUserJSON = window.localStorage.getItem(USER_LOCAL_VARIABLE_NAME)
+  const user = JSON.parse(loggedUserJSON)
+  userToken = `bearer ${user.token}`
   return loggedUserJSON
-    ? JSON.parse(loggedUserJSON)
+    ? user
     : null
 }
 
