@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteBlogs, likeBlogs, selectBlogById } from '../features/blogs/blogsSlice'
+import { selectUser } from '../features/users/usersSlice'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ id }) => {
 
   const [ visible, setVisible ] = useState(false)
-  const [ likes, setLikes ] = useState(blog.likes)
-  const [ deletedBlog, setDeletedBlog ] = useState(false)
+  const dispatch = useDispatch()
+  const blog = useSelector(state => selectBlogById(state, id))
+  const user = useSelector(selectUser)
 
   const blogStyle = {
     paddingTop: 10,
@@ -18,44 +21,32 @@ const Blog = ({ blog, user }) => {
   const showWhenVisible = { display: visible ? '' : 'none' }
   let buttonName = visible ? 'hide' : 'view'
 
-  const toggleVisibility = () => {
-    setVisible(!visible)
-  }
+  const toggleVisibility = () => setVisible(!visible)
 
-  const incrementLikes = (blog) => {
-    const updatedBlog = { ...blog, likes: likes + 1 }
+  const incrementLikes = (blog) => dispatch(likeBlogs(blog))
 
-    blogService.update(updatedBlog)
-      .then( () =>  setLikes(prevState => prevState + 1))
-      .catch(e => console.log(e))
-  }
-
-  const deleteBlog = blog => {
+  const deleteBlog = () => {
     if (window.confirm(`Remove ${blog.title}`)) {
-      blogService.deleteBlog(blog)
-        .then(() =>  setDeletedBlog(true))
-        .catch(e => console.log(e))
+      dispatch(deleteBlogs(id))
     }
   }
 
   return (
-    deletedBlog
-      ? null
-      : <div style={blogStyle}>
-        <p>{blog.title} <button onClick={toggleVisibility}>{buttonName}</button></p>
-        <div style={showWhenVisible}>
-          <div>
-            <span>{`URL: ${blog.url}`}</span>
-          </div>
-          <div>
-            <span>{`Likes: ${likes}`}</span><button onClick={() => incrementLikes(blog)}>like</button>
-          </div>
-          <div>
-            <span>{`Author: ${blog.author}`}</span>
-            { blog.user.username === user.username && <div><button onClick={() => deleteBlog(blog)}>remove</button></div> }
-          </div>
+    <div style={blogStyle}>
+      <p>{blog.title} <button onClick={toggleVisibility}>{buttonName}</button></p>
+      <div style={showWhenVisible}>
+        <div>
+          <span>{`URL: ${blog.url}`}</span>
+        </div>
+        <div>
+          <span>{`Likes: ${blog.likes}`}</span><button onClick={() => incrementLikes(blog)}>like</button>
+        </div>
+        <div>
+          <span>{`Author: ${blog.author}`}</span>
+          { blog.user.username === user.username && <div><button onClick={deleteBlog}>remove</button></div> }
         </div>
       </div>
+    </div>
   )
 }
 

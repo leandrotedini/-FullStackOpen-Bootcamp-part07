@@ -4,7 +4,7 @@ import { getBlogs, selectAllBlogs } from '../features/blogs/blogsSlice'
 import Blog from './Blog'
 import BlogForm from './BlogForm'
 
-const BlogsList = ({ user }) => {
+const BlogsList = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(selectAllBlogs)
 
@@ -12,19 +12,11 @@ const BlogsList = ({ user }) => {
     dispatch(getBlogs())
   }, [])
 
-  // const addBlog = (newBlog) => {
-  //   // setBlogs([ ...blogs, newBlog ].sort(sortFunction))
-  //   showNotification({
-  //     message: `a new blog ${newBlog.title} by ${newBlog.author}`,
-  //     success: true
-  //   })
-  // }
-
   return <>
     <h2>blogs</h2>
     <div data-test-id="blog-list">
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={user}/>
+        <Blog key={blog.id} id={blog.id}/>
       )}
       <BlogForm/>
     </div>

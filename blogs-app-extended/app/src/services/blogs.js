@@ -24,12 +24,12 @@ const update = (blog) => {
   return request.then(response => response.data)
 }
 
-const deleteBlog = (blog) => {
+const deleteBlog = (id) => {
   const config = {
     headers: { Authorization: userToken },
   }
   const request = axios
-    .delete(baseUrl+blog.id, config)
+    .delete(baseUrl+id, config)
   return request.then(response => response.data)
 }
 
