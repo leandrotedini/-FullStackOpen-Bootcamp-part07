@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteBlogs, likeBlogs, selectBlogById } from '../features/blogs/blogsSlice'
-import { selectUser } from '../features/users/usersSlice'
+import { deleteBlogs, likeBlogs, selectBlogById } from '../../features/blogs/blogsSlice'
+import { selectUser } from '../../features/users/usersSlice'
 
 const Blog = ({ id }) => {
 

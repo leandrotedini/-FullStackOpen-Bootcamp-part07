@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectUser, logout } from './features/users/usersSlice'
-import BlogList from './components/BlogList'
+import BlogList from './components/Blogs/BlogList'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 

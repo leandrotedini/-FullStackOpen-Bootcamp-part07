@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getBlogs, selectAllBlogs } from '../features/blogs/blogsSlice'
+import { getBlogs, selectAllBlogs } from '../../features/blogs/blogsSlice'
 import Blog from './Blog'
 import BlogForm from './BlogForm'
 

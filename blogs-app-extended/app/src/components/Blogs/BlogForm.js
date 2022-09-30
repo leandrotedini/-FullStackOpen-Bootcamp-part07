@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react'
 import { useDispatch } from 'react-redux'
-import { createBlogs } from '../features/blogs/blogsSlice'
-import { setNotification } from '../features/notification/notificationSlice'
-import Togglable from './Togglable'
+import { createBlogs } from '../../features/blogs/blogsSlice'
+import { setNotification } from '../../features/notification/notificationSlice'
+import Togglable from '../Togglable'
 
 const BlogForm = () => {
   const [title, setTitle] = useState('')
