@@ -7,7 +7,7 @@ const initialState = {
   error: null
 }
 
-export const getBlogs = createAsyncThunk('blogs/getAll',
+export const fetchBlogs = createAsyncThunk('blogs/fetchBlogs',
   async () => await blogService.getAll())
 
 export const createBlogs = createAsyncThunk('blogs/create',
@@ -28,12 +28,12 @@ const blogsSlice = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder
-      .addCase(getBlogs.pending, (state) => {
+      .addCase(fetchBlogs.pending, (state) => {
         state.status = 'loading'
       })
-      .addCase(getBlogs.fulfilled, (state, action) => {
+      .addCase(fetchBlogs.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        state.blogs = state.blogs.concat(action.payload)
+        state.blogs = action.payload
       })
       .addCase(createBlogs.pending, (state) => {
         state.status = 'loading'
@@ -69,4 +69,5 @@ const blogsSlice = createSlice({
 
 export const selectAllBlogs = state => state.blogs.blogs
 export const selectBlogById = (state, id) => state.blogs.blogs.find((blog) => blog.id === id)
+export const { getBlogs } = blogsSlice.actions
 export default blogsSlice.reducer

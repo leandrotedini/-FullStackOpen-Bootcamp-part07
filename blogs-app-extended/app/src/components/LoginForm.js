@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { loginUser } from '../features/users/usersSlice'
+import { loginUser } from '../features/users/userLoggedSlice'
 import { setNotification } from '../features/notification/notificationSlice'
 
 

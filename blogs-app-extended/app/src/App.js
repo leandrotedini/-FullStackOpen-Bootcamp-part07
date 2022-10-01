@@ -1,13 +1,14 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { selectUser, logout } from './features/users/usersSlice'
-import BlogList from './components/Blogs/BlogList'
+import { selectUserLogged, logout } from './features/users/userLoggedSlice'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 
+import NavBar from './components/NavBar'
+
 const App = () => {
   const dispatch = useDispatch()
-  const user = useSelector(selectUser)
+  const user = useSelector(selectUserLogged)
 
   const userLogout = () => {
     dispatch(logout())
@@ -21,7 +22,7 @@ const App = () => {
         : <>
           <p>{`${user.name} logged in`}</p>
           <button onClick={userLogout}>Logout</button>
-          <BlogList/>
+          <NavBar />
         </>
       }
     </div>

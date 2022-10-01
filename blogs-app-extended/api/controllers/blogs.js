@@ -1,5 +1,6 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const tokenExtractor = require('../middleware/tokenExtractor')
 
 blogsRouter.get('/', async (request, response) => {
@@ -28,6 +29,11 @@ blogsRouter.post('/', tokenExtractor, async (request, response) => {
   })
 
   await blog.save()
+  const user = await User.findById(request.userId)
+  if (user) {
+    user.blogs.push(blog)
+    await user.save()
+  }
   const savedBlog = await blog.populate('user', { username: 1, name: 1 })
   response.status(201).json(savedBlog)
 })

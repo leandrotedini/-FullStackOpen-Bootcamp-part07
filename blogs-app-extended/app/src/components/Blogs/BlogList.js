@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getBlogs, selectAllBlogs } from '../../features/blogs/blogsSlice'
+import { fetchBlogs, selectAllBlogs } from '../../features/blogs/blogsSlice'
 import Blog from './Blog'
 import BlogForm from './BlogForm'
 
@@ -9,7 +9,7 @@ const BlogsList = () => {
   const blogs = useSelector(selectAllBlogs)
 
   useEffect(() => {
-    dispatch(getBlogs())
+    dispatch(fetchBlogs())
   }, [])
 
   return <>

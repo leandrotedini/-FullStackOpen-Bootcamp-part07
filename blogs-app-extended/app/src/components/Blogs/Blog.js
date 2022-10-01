@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteBlogs, likeBlogs, selectBlogById } from '../../features/blogs/blogsSlice'
-import { selectUser } from '../../features/users/usersSlice'
+import { selectUserLogged } from '../../features/users/userLoggedSlice'
 
 const Blog = ({ id }) => {
 
   const [ visible, setVisible ] = useState(false)
   const dispatch = useDispatch()
   const blog = useSelector(state => selectBlogById(state, id))
-  const user = useSelector(selectUser)
+  const user = useSelector(selectUserLogged)
 
   const blogStyle = {
     paddingTop: 10,
