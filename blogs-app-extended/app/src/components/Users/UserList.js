@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectUsers, fetchUsers } from '../../features/users/usersSlice'
+import { Link } from 'react-router-dom'
 
 const UserList = () => {
   const dispatch = useDispatch()
@@ -9,8 +10,6 @@ const UserList = () => {
   useEffect(() => {
     dispatch(fetchUsers())
   }, [])
-
-  console.log(users)
 
   if (!users.length) return <h4>No results</h4>
 
@@ -28,12 +27,15 @@ const UserList = () => {
         <tbody>
           {users.map(user =>
             <tr key={user.username}>
-              <td>{user.username}</td>
+              <td>
+                <Link to={`/users/${user.id}`}>
+                  {user.username}
+                </Link>
+              </td>
               <td>{user.blogs.length}</td>
             </tr>
           )}
         </tbody>
-
       </table>
     </div>
   </>
