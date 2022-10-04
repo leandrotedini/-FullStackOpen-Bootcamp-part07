@@ -1,27 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import { deleteBlogs, likeBlogs, selectBlogById } from '../../features/blogs/blogsSlice'
 import { selectUserLogged } from '../../features/users/userLoggedSlice'
 
-const Blog = ({ id }) => {
-
-  const [ visible, setVisible ] = useState(false)
+const Blog = () => {
   const dispatch = useDispatch()
+  const id = useParams().id
   const blog = useSelector(state => selectBlogById(state, id))
   const user = useSelector(selectUserLogged)
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
-  const showWhenVisible = { display: visible ? '' : 'none' }
-  let buttonName = visible ? 'hide' : 'view'
-
-  const toggleVisibility = () => setVisible(!visible)
 
   const incrementLikes = (blog) => dispatch(likeBlogs(blog))
 
@@ -32,17 +19,17 @@ const Blog = ({ id }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <p>{blog.title} <button onClick={toggleVisibility}>{buttonName}</button></p>
-      <div style={showWhenVisible}>
+    <div>
+      <h2>{blog.title}</h2>
+      <div>
         <div>
-          <span>{`URL: ${blog.url}`}</span>
+          <a href="#">{blog.url}</a>
         </div>
         <div>
-          <span>{`Likes: ${blog.likes}`}</span><button onClick={() => incrementLikes(blog)}>like</button>
+          <span>{`${blog.likes} likes`}</span><button onClick={() => incrementLikes(blog)}>like</button>
         </div>
         <div>
-          <span>{`Author: ${blog.author}`}</span>
+          <span>{`added by ${blog.author}`}</span>
           { blog.user.username === user.username && <div><button onClick={deleteBlog}>remove</button></div> }
         </div>
       </div>
