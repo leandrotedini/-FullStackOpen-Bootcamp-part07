@@ -1,33 +1,15 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const { initialBlogs,
-  usernameCreator,
+  getValidToken,
   blogsInDb,
   initializeDB } = require('../utils/test_helper')
-const Blog = require('../models/blog')
-const User = require('../models/user')
 const app = require('../app')
 const api = supertest(app)
-const jwt = require('jsonwebtoken')
 
 beforeEach(async () => {
   await initializeDB()
 })
-
-const getValidToken = async () => {
-  const userCreator = await User.findOne({ username: usernameCreator })
-  const validUserToken = 'Bearer ' + generateToken({
-    username: userCreator.username,
-    id: userCreator._id
-  })
-  return validUserToken
-}
-
-const generateToken = (user) => {
-  return jwt.sign(user, process.env.SECRET)
-}
-
-
 
 test('blogs are returned as json', async () => {
   await api
@@ -217,11 +199,13 @@ describe('Update Blog', () => {
 
     const blogsAtStart = await blogsInDb()
     let blogToUpdate = blogsAtStart[0]
+    const validUserToken = await getValidToken()
 
     blogToUpdate.likes = 27
 
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
+      .set('Authorization', validUserToken)
       .send(blogToUpdate)
       .expect(200)
       .expect('Content-Type', /application\/json/)

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { fetchBlogs, selectAllBlogs } from '../../features/blogs/blogsSlice'
-// import Blog from './Blog'
 import BlogForm from './BlogForm'
 
 const BlogsList = () => {

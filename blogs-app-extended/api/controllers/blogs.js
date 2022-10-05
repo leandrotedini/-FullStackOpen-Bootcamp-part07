@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const Comment = require('../models/comment')
 const tokenExtractor = require('../middleware/tokenExtractor')
 
 blogsRouter.get('/', async (request, response) => {
@@ -25,6 +26,7 @@ blogsRouter.post('/', tokenExtractor, async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
+    comments: [],
     user: request.userId
   })
 
@@ -65,4 +67,29 @@ blogsRouter.put('/:id', tokenExtractor, async (request, response) => {
   response.json(updatedBlog)
 })
 
+blogsRouter.get('/:id/comments', async (request, response) => {
+  console.log(request.params)
+  const blog = await Blog.findById(request.params.id).populate('comments')
+  if (blog) response.json(blog.comments)
+  response.status(404).end()
+
+})
+
+blogsRouter.post('/:id/comments', tokenExtractor, async (request, response) => {
+
+  const body = request.body
+  const comment = new Comment({
+    text: body.text,
+    blog: body.blog,
+    user: body.user
+  })
+
+  await comment.save()
+  const updatedBlog = await Blog.findById(body.blog).populate('comments')
+
+  updatedBlog.comments.push(comment)
+  await updatedBlog.save()
+
+  response.status(201).json(updatedBlog)
+})
 module.exports = blogsRouter
