@@ -26,7 +26,6 @@ blogsRouter.post('/', tokenExtractor, async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
-    comments: [],
     user: request.userId
   })
 
@@ -68,11 +67,9 @@ blogsRouter.put('/:id', tokenExtractor, async (request, response) => {
 })
 
 blogsRouter.get('/:id/comments', async (request, response) => {
-  console.log(request.params)
-  const blog = await Blog.findById(request.params.id).populate('comments')
-  if (blog) response.json(blog.comments)
+  const comments = await Comment.find({ blog: request.params.id })
+  if (comments) response.json(comments)
   response.status(404).end()
-
 })
 
 blogsRouter.post('/:id/comments', tokenExtractor, async (request, response) => {
@@ -85,11 +82,6 @@ blogsRouter.post('/:id/comments', tokenExtractor, async (request, response) => {
   })
 
   await comment.save()
-  const updatedBlog = await Blog.findById(body.blog).populate('comments')
-
-  updatedBlog.comments.push(comment)
-  await updatedBlog.save()
-
-  response.status(201).json(updatedBlog)
+  response.status(201).json(comment)
 })
 module.exports = blogsRouter

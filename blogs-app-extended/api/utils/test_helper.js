@@ -1,5 +1,6 @@
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const Comment = require('../models/comment')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
@@ -43,6 +44,12 @@ const initialBlogs = [
   }
 ]
 
+const initialTextComment = [
+  'This is a comment test',
+  'This a second comment test',
+  'This is a tirdth comment test'
+]
+
 const usernameCreator = '@Test'
 
 const initialUsers = [
@@ -66,9 +73,11 @@ const initialUsers = [
 const initializeDB = async () => {
   await Blog.deleteMany({})
   await User.deleteMany({})
+  await Comment.deleteMany({})
 
   await initializeUsers()
   await initializeBlogs()
+  await initializeComments()
 }
 
 const initializeUsers = async () => {
@@ -92,6 +101,22 @@ const initializeBlogs = async () => {
   await Promise.all(promiseArray)
 }
 
+const initializeComments = async () => {
+  const userCreator = await User.findOne({ username: usernameCreator })
+  const blog = await Blog.findOne({ user: userCreator.id })
+
+  const blogComments = initialTextComment.map( text => {
+    return new Comment({
+      text,
+      blog: blog.id,
+      user: userCreator.id
+    })
+  })
+
+  const promiseArray = blogComments.map(comment => comment.save())
+  await Promise.all(promiseArray)
+}
+
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
   return blogs.map(blog => blog.toJSON())
@@ -100,6 +125,10 @@ const blogsInDb = async () => {
 const usersInDb = async () => {
   const users = await User.find({})
   return users.map(user => user.toJSON())
+}
+
+const getUserCreator = async () => {
+  return await User.findOne({ username: usernameCreator })
 }
 
 const getValidToken = async () => {
@@ -115,8 +144,10 @@ const getValidToken = async () => {
 module.exports = {
   initialBlogs,
   initialUsers,
+  initialTextComment,
   usernameCreator,
   getValidToken,
+  getUserCreator,
   blogsInDb,
   usersInDb,
   initializeDB

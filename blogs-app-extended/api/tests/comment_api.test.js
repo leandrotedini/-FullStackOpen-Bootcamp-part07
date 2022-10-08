@@ -4,21 +4,20 @@ const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 const User = require('../models/user')
-// const Comment = require('../models/comment')
 
 const {
   getValidToken,
-  // blogsInDb,
+  getUserCreator,
+  initialTextComment,
   initializeDB } = require('../utils/test_helper')
 
 beforeEach(async () => {
   await initializeDB()
 })
 
-describe('Create Comment', () => {
+describe('Comments', () => {
   test('a valid blog can be added', async () => {
     const blog = await Blog.findOne()
-    const initialComments = blog.comments
     const user = await User.findOne()
 
     const newComment = {
@@ -36,11 +35,24 @@ describe('Create Comment', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const blogCommented = response.body
-    const contents = blogCommented.comments.map(c => c.text)
+    const commentCreated = response.body
 
-    expect(blogCommented.comments).toHaveLength(initialComments.length + 1)
-    expect(contents).toContain('This is a comment test')
+    expect(commentCreated.text).toBe('This is a comment test')
+    expect(commentCreated.blog).toBe(blog.id)
+    expect(commentCreated.user).toBe(user.id)
+  })
+
+  test('get comments of a blog', async () => {
+    const userCreator = await getUserCreator()
+    const blog = await Blog.findOne({ user: userCreator.id })
+
+    const response = await api
+      .get(`/api/blogs/${blog.id}/comments`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const comments = response.body
+    expect(comments).toHaveLength(initialTextComment.length)
   })
 })
 

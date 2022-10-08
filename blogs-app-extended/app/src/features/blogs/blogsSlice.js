@@ -11,16 +11,22 @@ export const fetchBlogs = createAsyncThunk('blogs/fetchBlogs',
   async () => await blogService.getAll())
 
 export const createBlogs = createAsyncThunk('blogs/create',
-  async (newBlog) => await blogService.create(newBlog))
+  async newBlog => await blogService.create(newBlog))
 
 export const deleteBlogs = createAsyncThunk('blogs/delete',
-  async (id) => {
+  async id => {
     await blogService.deleteBlog(id)
     return id
   })
 
+export const fetchBlogsComments = createAsyncThunk('blogs/fetchBlogsComments',
+  async blogId => {
+    const comments = await blogService.getAllComments(blogId)
+    return { blogId, comments }
+  })
+
 export const likeBlogs = createAsyncThunk('blogs/like',
-  async (blog) => await blogService.update({ ...blog, likes: blog.likes + 1 }))
+  async blog => await blogService.update({ ...blog, likes: blog.likes + 1 }))
 
 const blogsSlice = createSlice({
   name: 'blogs',
@@ -48,6 +54,19 @@ const blogsSlice = createSlice({
       .addCase(deleteBlogs.fulfilled, (state, action) => {
         state.status = 'succeeded'
         state.blogs = state.blogs.filter(blog => blog.id !== action.payload)
+      })
+      .addCase(fetchBlogsComments.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(fetchBlogsComments.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+        const { blogId, comments } = action.payload
+        state.blogs = state.blogs.map(blog => {
+          if (blog.id === blogId) {
+            blog.comments = comments
+          }
+          return blog
+        })
       })
       .addCase(likeBlogs.pending, (state) => {
         state.status = 'loading'
