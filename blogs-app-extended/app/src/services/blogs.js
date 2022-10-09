@@ -38,4 +38,19 @@ const getAllComments = (blogId) => {
   return request.then(response => response.data)
 }
 
-export default { getAll, create, update, deleteBlog, getAllComments }
+const createComment = (newComment) => {
+  const config = {
+    headers: { Authorization: userToken },
+  }
+  const request = axios.post(`${baseUrl}/${newComment.blogId}/comments`, newComment, config)
+  return request.then(response => response.data)
+}
+
+export default {
+  getAll,
+  create,
+  update,
+  deleteBlog,
+  getAllComments,
+  createComment
+}

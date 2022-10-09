@@ -25,6 +25,9 @@ export const fetchBlogsComments = createAsyncThunk('blogs/fetchBlogsComments',
     return { blogId, comments }
   })
 
+export const createBlogsComments = createAsyncThunk('blogs/createBlogsComments',
+  async newComment => await blogService.createComment(newComment))
+
 export const likeBlogs = createAsyncThunk('blogs/like',
   async blog => await blogService.update({ ...blog, likes: blog.likes + 1 }))
 
@@ -64,6 +67,19 @@ const blogsSlice = createSlice({
         state.blogs = state.blogs.map(blog => {
           if (blog.id === blogId) {
             blog.comments = comments
+          }
+          return blog
+        })
+      })
+      .addCase(createBlogsComments.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(createBlogsComments.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+        const blogId = action.payload.blog
+        state.blogs = state.blogs.map(blog => {
+          if (blog.id === blogId) {
+            blog.comments.push(action.payload)
           }
           return blog
         })

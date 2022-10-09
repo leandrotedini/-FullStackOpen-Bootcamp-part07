@@ -78,7 +78,7 @@ blogsRouter.post('/:id/comments', tokenExtractor, async (request, response) => {
   const comment = new Comment({
     text: body.text,
     blog: body.blog,
-    user: body.user
+    user: request.userId
   })
 
   await comment.save()
