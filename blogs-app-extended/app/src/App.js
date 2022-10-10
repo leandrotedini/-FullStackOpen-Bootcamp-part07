@@ -26,9 +26,9 @@ const App = () => {
             <p>{`${user.name} logged in`}</p>
             <button onClick={userLogout}>Logout</button>
             <NavBar />
+            <AppRoutes />
           </>
         }
-        <AppRoutes />
       </Router>
     </div>
   )

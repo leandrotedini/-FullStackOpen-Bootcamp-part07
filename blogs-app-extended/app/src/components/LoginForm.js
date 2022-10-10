@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
+import { useField } from '../hooks'
 import { useDispatch } from 'react-redux'
 import { loginUser } from '../features/users/userLoggedSlice'
 import { setNotification } from '../features/notification/notificationSlice'
+import RegisterForm from './RegisterForm'
 
 
 const LoginForm = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [showRegister, setShowRegister] = useState(false)
+  const { reset: resetUsername, ...username } = useField('text')
+  const { reset: resetPassword, ...password } = useField('password')
+
   const dispatch = useDispatch()
 
   const handleLogin = async (event) => {
@@ -14,41 +18,42 @@ const LoginForm = () => {
 
     try {
       dispatch(
-        loginUser({ username, password })
+        loginUser({
+          username: username.value,
+          password: password.value
+        })
       )
-      setUsername('')
-      setPassword('')
+      resetUsername()
+      resetPassword()
     } catch (exception) {
       dispatch(setNotification({
-        message: `${exception.response.data.error}`,
+        message: exception.response.data.error,
         success: false
       }))
     }
   }
 
   return <>
-    <h2>log in to application</h2>
-    <form data-test-id='login-form' onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
+    {showRegister
+      ? <RegisterForm />
+      : <>
+        <h2>log in to application</h2>
+        <form data-test-id='login-form' onSubmit={handleLogin}>
+          <div>
+            username
+            <input { ...username } />
+          </div>
+          <div>
+            password
+            <input { ...password } />
+          </div>
+          <button type="submit">login</button>
+        </form>
+      </>
+    }
+    <button onClick={() => setShowRegister(!showRegister)}>
+      {showRegister ? 'cancel' : 'create acount'}
+    </button>
   </>
 }
 
