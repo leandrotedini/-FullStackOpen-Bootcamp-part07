@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+
 
 const blogSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -11,6 +13,7 @@ const blogSchema = new mongoose.Schema({
 blogSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
+    returnedObject.createdAt = returnedObject.createdAt.toLocaleDateString('en-US', options)
     delete returnedObject._id
     delete returnedObject.__v
   }
