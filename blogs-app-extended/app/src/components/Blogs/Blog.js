@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { likeBlogs } from '../../features/blogs/blogsSlice'
 import { Link as ReactRouterLink } from 'react-router-dom'
-import{ LikeHeartSocialShape } from '../../utils/custom_icons'
+import{ LikeHeartSocialShape, LikeHeartSocial } from '../../utils/custom_icons'
 import {
   Heading,
   Box,
@@ -19,8 +19,6 @@ import {
 
 const Blog = ({ blog }) => {
   const dispatch = useDispatch()
-
-  const incrementLikes = (blog) => dispatch(likeBlogs(blog))
 
   return (
     <div>
@@ -51,8 +49,13 @@ const Blog = ({ blog }) => {
           </Stack>
           <Spacer />
           <Flex align='end'>
-            <Text>{`${blog.likes} likes`}</Text>
-            <IconButton icon={<LikeHeartSocialShape />} onClick={() => incrementLikes(blog)}/>
+            <Text px={2}>{`${blog.likes} likes`}</Text>
+            <IconButton
+              icon={blog.likedByUser
+                ? <LikeHeartSocial />
+                : <LikeHeartSocialShape />}
+              onClick={() => dispatch(likeBlogs(blog.id))}
+            />
           </Flex>
         </Stack>
       </Box>

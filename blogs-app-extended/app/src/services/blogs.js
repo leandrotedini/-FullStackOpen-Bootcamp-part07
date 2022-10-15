@@ -3,7 +3,10 @@ import { userToken } from '../utils/login_helper'
 const baseUrl = '/api/blogs/'
 
 const getAll = () => {
-  const request = axios.get(baseUrl)
+  const config = {
+    headers: { Authorization: userToken },
+  }
+  const request = axios.get(baseUrl, config)
   return request.then(response => response.data)
 }
 
@@ -21,6 +24,15 @@ const update = (blog) => {
   }
   const request = axios
     .put(baseUrl+blog.id, blog, config)
+  return request.then(response => response.data)
+}
+
+const likeBlog = (blogId) => {
+  const config = {
+    headers: { Authorization: userToken },
+  }
+  const request = axios
+    .put(`${baseUrl}/${blogId}/like`, { blogId }, config)
   return request.then(response => response.data)
 }
 
@@ -52,5 +64,6 @@ export default {
   update,
   deleteBlog,
   getAllComments,
+  likeBlog,
   createComment
 }
