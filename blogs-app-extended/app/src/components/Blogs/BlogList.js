@@ -7,6 +7,7 @@ import {
   StackDivider,
   LinkBox,
   Stack,
+  Container,
 } from '@chakra-ui/react'
 
 const BlogsList = () => {
@@ -17,23 +18,25 @@ const BlogsList = () => {
     dispatch(fetchBlogs())
   }, [])
 
-  return <>
-    <Heading as='h2' size='2xl' my={4}>
-      Blogs
-    </Heading>
-    <Stack
-      divider={<StackDivider borderColor='gray.200' />}
-      spacing={4}
-      align='stretch'
-      direction={'column'}
-    >
-      {blogs.map(blog =>
-        <LinkBox key={blog.id}>
-          <Blog blog={blog} />
-        </LinkBox>
-      )}
-    </Stack>
-  </>
+  return (
+    <Container>
+      <Heading as='h2' size='2xl' my={4}>
+        Blogs
+      </Heading>
+      <Stack
+        divider={<StackDivider borderColor='gray.200' />}
+        spacing={4}
+        align='stretch'
+        direction={'column'}
+      >
+        {blogs.map(blog =>
+          <LinkBox key={blog.id}>
+            <Blog blog={blog} />
+          </LinkBox>
+        )}
+      </Stack>
+    </Container>
+  )
 }
 
 export default BlogsList
