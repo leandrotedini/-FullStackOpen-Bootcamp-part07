@@ -12,7 +12,6 @@ import {
 
 const CommentList = ({ comments }) => {
 
-  if (!comments) return <h2>No comments yet</h2>
   return (
     <Stack justify='start'>
       <List spacing={4}>

@@ -1,19 +1,24 @@
 import React from 'react'
 import { Link as ReactRouterLink } from 'react-router-dom'
-import {
-  Stack, Box, Flex, Spacer, Link, Text
-} from '@chakra-ui/react'
 import { NAVIGATION_LINKS } from '../utils/navigation_helper'
 import NavMenu from './Menu/NavMenu'
+import BlogForm from './Blogs/BlogForm'
+import {
+  Stack, Box, Flex, Spacer, Link, Text, HStack, Button, useDisclosure
+} from '@chakra-ui/react'
+import { AddIcon } from '@chakra-ui/icons'
+
 
 const NavBar = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   return(
     <>
       <Stack>
         <Flex minWidth='max-content'
           alignItems='center'
-          gap='2' bg='green.500'
+          gap='2'
+          bg='green.500'
           color='white'
           px={8}
         >
@@ -27,7 +32,21 @@ const NavBar = () => {
             </Box>
           )}
           <Spacer />
-          <NavMenu/>
+          <HStack>
+            <Button
+              leftIcon={<AddIcon />}
+              size='md'
+              mx={2}
+              bg='green.500'
+              _hover={{ bg: 'green.400' }}
+              color='white'
+              variant='outline'
+              onClick={onOpen}>
+                Blog
+            </Button>
+            <BlogForm isOpen={isOpen} onClose={onClose} />
+            <NavMenu/>
+          </HStack>
         </Flex>
       </Stack>
     </>

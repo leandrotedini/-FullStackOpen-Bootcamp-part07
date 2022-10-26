@@ -16,7 +16,7 @@ import {
   useColorModeValue,
   Divider,
 } from '@chakra-ui/react'
-import { DeleteIcon } from '@chakra-ui/icons'
+import { DeleteIcon, ExternalLinkIcon } from '@chakra-ui/icons'
 
 
 
@@ -50,13 +50,14 @@ const BlogDetails = () => {
           overflow={'hidden'}>
           <Blog blog={blog}/>
           <HStack
-            // direction={{ base: 'column', sm: 'row' }}
             align={'end'}
             verticalAlign
             justify={'space-between'}
             pt={8}>
             <Text color={'gray.500'}>
-              More info: <Link href="#">{blog.url}</Link>
+              More info: <Link href="#" isExternal>
+                {blog.url} <ExternalLinkIcon mx='2px' />
+              </Link>
             </Text>
             { blog.user.username === user.username
               && <IconButton
