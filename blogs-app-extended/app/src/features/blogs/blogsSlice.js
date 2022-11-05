@@ -29,7 +29,10 @@ export const createBlogsComments = createAsyncThunk('blogs/createBlogsComments',
   async newComment => await blogService.createComment(newComment))
 
 export const likeBlogs = createAsyncThunk('blogs/like',
-  async blog => await blogService.update({ ...blog, likes: blog.likes + 1 }))
+  async blogId => {
+    await blogService.likeBlog(blogId)
+    return blogId
+  })
 
 const blogsSlice = createSlice({
   name: 'blogs',
@@ -89,11 +92,12 @@ const blogsSlice = createSlice({
       })
       .addCase(likeBlogs.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        const { id } = action.payload
-        const blogToUpdate = state.blogs.find((blog) => blog.id === id)
-        if (blogToUpdate) {
-          blogToUpdate.likes++
-        }
+        const blogToUpdate = state.blogs.find((blog) => blog.id === action.payload)
+        blogToUpdate.likedByUser
+          ? blogToUpdate.likes--
+          : blogToUpdate.likes++
+
+        blogToUpdate.likedByUser = !blogToUpdate.likedByUser
       })
       .addCase(likeBlogs.rejected, (state, action) => {
         state.status = 'failed'

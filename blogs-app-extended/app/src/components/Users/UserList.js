@@ -1,7 +1,18 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectUsers, fetchUsers } from '../../features/users/usersSlice'
-import { Link } from 'react-router-dom'
+import { Link as ReactRouterLink } from 'react-router-dom'
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Link
+} from '@chakra-ui/react'
 
 const UserList = () => {
   const dispatch = useDispatch()
@@ -11,34 +22,31 @@ const UserList = () => {
     dispatch(fetchUsers())
   }, [])
 
-  if (!users.length) return <h4>No results</h4>
-
-  return <>
-    <h2>User</h2>
-    <div>
-      {}
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>blogs created</th>
-          </tr>
-        </thead>
-        <tbody>
+  return (
+    <TableContainer w='40%'>
+      <Table variant='simple'>
+        <TableCaption>Blogs created by User</TableCaption>
+        <Thead>
+          <Tr>
+            <Th>User</Th>
+            <Th isNumeric>Blogs</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
           {users.map(user =>
-            <tr key={user.username}>
-              <td>
-                <Link to={`/users/${user.id}`}>
+            <Tr key={user.username}>
+              <Td>
+                <Link as={ReactRouterLink} to={`/users/${user.id}`}>
                   {user.username}
                 </Link>
-              </td>
-              <td>{user.blogs.length}</td>
-            </tr>
+              </Td>
+              <Td isNumeric>{user.blogs.length}</Td>
+            </Tr>
           )}
-        </tbody>
-      </table>
-    </div>
-  </>
+        </Tbody>
+      </Table>
+    </TableContainer>
+  )
 }
 
 export default UserList

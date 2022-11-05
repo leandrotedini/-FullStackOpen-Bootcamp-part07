@@ -1,75 +1,125 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { createBlogs } from '../../features/blogs/blogsSlice'
 import { setNotification } from '../../features/notification/notificationSlice'
-import Togglable from '../Togglable'
+import { useField } from '../../hooks/index'
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  Heading,
+  Box,
+  FormControl,
+  FormLabel,
+  Input,
+} from '@chakra-ui/react'
 
-const BlogForm = () => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-  const blogFormRef = useRef()
+const BlogForm = ({ isOpen, onClose }) => {
+  const [ buttonDisabled, setButtonDisabled ] = useState(true)
+  const { reset: resetTitle, ...title } = useField('text')
+  const { reset: resetAuthor, ...author } = useField('text')
+  const { reset: resetUrl, ...url } = useField('text')
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    setButtonDisabled(title.value === ''
+      || author.value === ''
+      || url.value === '')
+  }, [title, author, url])
+
+  const closeModal = () => {
+    resetTitle()
+    resetAuthor()
+    resetUrl()
+    onClose()
+  }
 
   const handleCreateBlog = async (event) => {
     event.preventDefault()
 
-    const newBlog = { title, author, url }
+    const newBlog = {
+      title: title.value,
+      author: author.value,
+      url: url.value
+    }
 
     try {
       dispatch(createBlogs(newBlog))
       dispatch(setNotification({
-        notification: 'new blog created',
-        success: true
+        description: 'new blog created',
+        status: 'success'
       }))
 
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      blogFormRef.current.toggleVisibility()
+      closeModal()
     } catch (exception) {
-      dispatch(setNotification(exception))
+      dispatch(setNotification({
+        description: exception,
+        status: 'error'
+      }))
     }
   }
 
-  return <>
-    <Togglable buttonLabel={'new blog'} ref={blogFormRef} >
-      <h2>create new</h2>
-      <form data-test-id="blog-form" onSubmit={handleCreateBlog}>
-        <div>
-          <label>Title:
-            <input
-              type="text"
-              value={title}
-              name="title"
-              onChange={({ target }) => setTitle(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>Author:
-            <input
-              type="text"
-              value={author}
-              name="author"
-              onChange={({ target }) => setAuthor(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>URL:
-            <input
-              type="text"
-              value={url}
-              name="url"
-              onChange={({ target }) => setUrl(target.value)}
-            />
-          </label>
-        </div>
-        <button type="submit">create</button>
-      </form>
-    </Togglable>
-  </>
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <form data-test-id="blog-form" onSubmit={handleCreateBlog}>
+          <ModalHeader>
+            <Heading>Create New</Heading>
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box>
+              <FormControl id="title" isRequired>
+                <FormLabel>Title</FormLabel>
+                <Input { ...title } />
+              </FormControl>
+            </Box>
+            <Box>
+              <FormControl id="author" isRequired>
+                <FormLabel>Author</FormLabel>
+                <Input { ...author } />
+              </FormControl>
+            </Box>
+            <Box>
+              <FormControl id="url" isRequired>
+                <FormLabel>URL</FormLabel>
+                <Input { ...url } />
+              </FormControl>
+            </Box>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              bg='gray.400'
+              color={'white'}
+              _hover={{
+                bg: 'gray.500',
+              }}
+              mr={3}
+              onClick={closeModal}>
+              Close
+            </Button>
+            <Button
+              type="submit"
+              bg='blue.400'
+              color={'white'}
+              _hover={{
+                bg: 'blue.500',
+              }}
+              isDisabled={buttonDisabled}>
+                Create
+            </Button>
+          </ModalFooter>
+        </form>
+      </ModalContent>
+    </Modal>
+  )
 }
 
 export default BlogForm

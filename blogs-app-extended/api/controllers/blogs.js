@@ -2,12 +2,20 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const Comment = require('../models/comment')
+const Blog_liked_User = require('../models/blog_liked_user')
 const tokenExtractor = require('../middleware/tokenExtractor')
 
-blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog
+blogsRouter.get('/', tokenExtractor, async (request, response) => {
+  const { userId } = request
+  let blogs = await Blog
     .find({})
     .populate('user', { username: 1, name: 1 })
+
+  const promiseArray = blogs.map( async blog => {
+    blog.likedByUser = Boolean(await Blog_liked_User.exists({ blog: blog.id, user: userId }))
+    return blog
+  })
+  blogs = await Promise.all(promiseArray)
   response.json(blogs)
 })
 
@@ -64,6 +72,24 @@ blogsRouter.put('/:id', tokenExtractor, async (request, response) => {
 
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
   response.json(updatedBlog)
+})
+
+blogsRouter.put('/:id/like', tokenExtractor, async (request, response) => {
+
+  const blog = request.body.blogId
+  const user = request.userId
+  const blogToUpdate = await Blog.findById(blog)
+  const exists = await Blog_liked_User.exists({ blog, user })
+
+  if (exists) {
+    await Blog_liked_User.deleteOne({ blog, user })
+    blogToUpdate.likes--
+  } else {
+    await Blog_liked_User.create({ blog, user })
+    blogToUpdate.likes++
+  }
+  blogToUpdate.save()
+  response.status(200).end()
 })
 
 blogsRouter.get('/:id/comments', async (request, response) => {

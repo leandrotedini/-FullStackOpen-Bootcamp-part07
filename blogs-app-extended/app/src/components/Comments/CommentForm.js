@@ -3,6 +3,11 @@ import { useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { createBlogsComments } from '../../features/blogs/blogsSlice'
 import { useField } from '../../hooks'
+import {
+  Input,
+  HStack,
+  Button
+} from '@chakra-ui/react'
 
 const CommentForm = () => {
   const blogId = useParams().id
@@ -27,8 +32,10 @@ const CommentForm = () => {
 
   return <>
     <form onSubmit={handleCreateComments}>
-      <input { ...comment } />
-      <button>comment</button>
+      <HStack>
+        <Input { ...comment } size="sm"/>
+        <Button type='submmit' size="sm">Comment</Button>
+      </HStack>
     </form>
   </>
 }

@@ -1,17 +1,29 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useField } from '../hooks'
-import { useDispatch } from 'react-redux'
-import { loginUser } from '../features/users/userLoggedSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { loginUser, selectUserLogged } from '../features/users/userLoggedSlice'
 import { setNotification } from '../features/notification/notificationSlice'
-import RegisterForm from './RegisterForm'
+import {
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Button,
+} from '@chakra-ui/react'
 
 
 const LoginForm = () => {
-  const [showRegister, setShowRegister] = useState(false)
   const { reset: resetUsername, ...username } = useField('text')
   const { reset: resetPassword, ...password } = useField('password')
+  const user = useSelector(selectUserLogged)
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user) navigate('/')
+  }, [user])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -27,34 +39,37 @@ const LoginForm = () => {
       resetPassword()
     } catch (exception) {
       dispatch(setNotification({
-        message: exception.response.data.error,
-        success: false
+        description: exception.response.data.error,
+        status: 'error'
       }))
     }
   }
 
-  return <>
-    {showRegister
-      ? <RegisterForm />
-      : <>
-        <h2>log in to application</h2>
-        <form data-test-id='login-form' onSubmit={handleLogin}>
-          <div>
-            username
-            <input { ...username } />
-          </div>
-          <div>
-            password
-            <input { ...password } />
-          </div>
-          <button type="submit">login</button>
-        </form>
-      </>
-    }
-    <button onClick={() => setShowRegister(!showRegister)}>
-      {showRegister ? 'cancel' : 'create acount'}
-    </button>
-  </>
+  return (
+    <form data-test-id='login-form' onSubmit={handleLogin}>
+      <Stack spacing={4}>
+        <FormControl id="username">
+          <FormLabel>Username</FormLabel>
+          <Input { ...username } />
+        </FormControl>
+        <FormControl id="password">
+          <FormLabel>Password</FormLabel>
+          <Input { ...password } />
+        </FormControl>
+        <Stack spacing={10}>
+          <Button
+            type='submit'
+            bg={'blue.400'}
+            color={'white'}
+            _hover={{
+              bg: 'blue.500',
+            }}>
+            Sign in
+          </Button>
+        </Stack>
+      </Stack>
+    </form>
+  )
 }
 
 export default LoginForm

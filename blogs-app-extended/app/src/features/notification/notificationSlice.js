@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const emptyNotification = { notification: '', success: '' }
+const emptyNotification = { description: '', status: '' }
 
 const initialState = {
   notification: emptyNotification,

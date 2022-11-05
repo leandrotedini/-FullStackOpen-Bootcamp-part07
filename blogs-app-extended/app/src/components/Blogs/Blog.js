@@ -1,51 +1,89 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import { deleteBlogs,
-  likeBlogs,
-  selectBlogById,
-  fetchBlogsComments
-} from '../../features/blogs/blogsSlice'
-import { selectUserLogged } from '../../features/users/userLoggedSlice'
-import CommentList from '../Comments/CommentList'
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import { likeBlogs } from '../../features/blogs/blogsSlice'
+import{ LikeHeartSocialShape, LikeHeartSocial } from '../../utils/custom_icons'
+import {
+  Heading,
+  Text,
+  Stack,
+  Flex,
+  Avatar,
+  IconButton,
+  useColorModeValue,
+  Spacer,
+  Box
+} from '@chakra-ui/react'
 
-const Blog = () => {
+
+const Blog = ({ blog }) => {
+  return (
+    <>
+      <BlogTitle title={blog.title}/>
+      <BlogBody blog={blog}/>
+    </>
+  )
+}
+
+export const BlogTitle = ({ title }) => {
+  return(
+    <Heading
+      color={useColorModeValue('gray.700', 'white')}
+      fontSize={'2xl'}
+      fontFamily={'body'}>
+      {title}
+    </Heading>
+  )
+}
+
+export const BlogBody = ({ blog }) => {
+
+  return(
+    <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
+      <Avatar
+        src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
+        alt={'Author'}
+      />
+      <Stack direction={'column'} spacing={0} fontSize={'sm'}>
+        <Text fontWeight={600}>{blog.user.username}</Text>
+        <Text color={'gray.500'}>{blog.createdAt}</Text>
+      </Stack>
+      <Spacer />
+      <Flex align='end'>
+        <BlogLikes blog={blog} />
+      </Flex>
+    </Stack>
+  )
+}
+
+export const BlogLikes = ({ blog }) => {
   const dispatch = useDispatch()
-  const id = useParams().id
-  const blog = useSelector(state => selectBlogById(state, id))
-  const user = useSelector(selectUserLogged)
-
-  useEffect(() => {
-    dispatch(fetchBlogsComments(id))
-  }, [])
-
-  const incrementLikes = (blog) => dispatch(likeBlogs(blog))
-
-  const deleteBlog = () => {
-    if (window.confirm(`Remove ${blog.title}`)) {
-      dispatch(deleteBlogs(id))
-    }
-  }
 
   return (
-    <div>
-      <h2>{blog.title}</h2>
-      <div>
-        <div>
-          <a href="#">{blog.url}</a>
-        </div>
-        <div>
-          <span>{`${blog.likes} likes`}</span><button onClick={() => incrementLikes(blog)}>like</button>
-        </div>
-        <div>
-          <span>{`added by ${blog.author}`}</span>
-          { blog.user.username === user.username && <div><button onClick={deleteBlog}>remove</button></div> }
-        </div>
-        <div>
-          <CommentList comments={blog.comments}/>
-        </div>
-      </div>
-    </div>
+    <>
+      <Text px={2}>{`${blog.likes} likes`}</Text>
+      <IconButton
+        icon={blog.likedByUser
+          ? <LikeHeartSocial />
+          : <LikeHeartSocialShape />}
+        onClick={() => dispatch(likeBlogs(blog.id))}
+      />
+    </>
+  )
+}
+
+export const BlogCard = ({ children }) => {
+  const bgColor = useColorModeValue('white', 'gray.900')
+
+  return (
+    <Box
+      w='full'
+      bg={bgColor}
+      boxShadow='2xl'
+      rounded='md'
+      p={6}
+      overflow='hidden'>
+      {children}
+    </Box>
   )
 }
 
