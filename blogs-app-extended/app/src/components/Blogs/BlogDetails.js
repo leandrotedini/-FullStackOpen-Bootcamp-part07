@@ -26,6 +26,7 @@ const BlogDetails = () => {
   const id = useParams().id
   const blog = useSelector(state => selectBlogById(state, id))
   const user = useSelector(selectUserLogged)
+  const bgColor = useColorModeValue('white', 'gray.900')
 
   useEffect(() => {
     dispatch(fetchBlogsComments(id))
@@ -43,7 +44,7 @@ const BlogDetails = () => {
         <Box
           key={blog.id}
           w={'full'}
-          bg={useColorModeValue('white', 'gray.900')}
+          bg={bgColor}
           boxShadow={'2xl'}
           rounded={'md'}
           p={6}

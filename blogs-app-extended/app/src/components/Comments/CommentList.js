@@ -10,7 +10,7 @@ import {
   Stack
 } from '@chakra-ui/react'
 
-const CommentList = ({ comments }) => {
+const CommentList = ({ comments = [] }) => {
 
   return (
     <Stack justify='start'>
