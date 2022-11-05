@@ -17,6 +17,7 @@ import {
 const BlogsList = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(selectAllBlogs)
+  const bgColor = useColorModeValue('white', 'gray.900')
 
   useEffect(() => {
     dispatch(fetchBlogs())
@@ -37,7 +38,7 @@ const BlogsList = () => {
           <Box
             key={blog.id}
             w={'full'}
-            bg={useColorModeValue('white', 'gray.900')}
+            bg={bgColor}
             boxShadow={'2xl'}
             rounded={'md'}
             p={6}

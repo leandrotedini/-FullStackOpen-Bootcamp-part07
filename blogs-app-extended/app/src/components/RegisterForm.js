@@ -52,8 +52,8 @@ const RegisterForm = () => {
 
     } catch (exception) {
       dispatch(setNotification({
-        message: exception.response.data.error,
-        success: false
+        description: exception.response.data.error,
+        status: 'error'
       }))
     }
   }

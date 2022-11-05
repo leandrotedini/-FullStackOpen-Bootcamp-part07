@@ -1,39 +1,27 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { cleanNotification, selectNotification } from '../features/notification/notificationSlice'
+import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { selectNotification } from '../features/notification/notificationSlice'
+import { useToast } from '@chakra-ui/react'
+
 
 
 const Notification = () => {
 
-  const dispatch = useDispatch()
-  const { notification, success } = useSelector(selectNotification)
+  const { description, status } = useSelector(selectNotification)
+  const toast = useToast()
 
   useEffect(() => {
-    if (notification !== ''){
-      setTimeout(() => {
-        dispatch(cleanNotification())
-      }, 5000)
+    if (description !== ''){
+      toast({
+        description,
+        status,
+        duration: 5000,
+        position: 'bottom',
+        isClosable: true,
+      })
     }
-  }, [notification])
+  }, [description])
 
-  const notificationStyle = {
-    color: success ? 'green': 'red',
-    fontStyle: 'italic',
-    fontSize: 16,
-    background: 'lightgrey',
-    borderSstyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10
-  }
-
-  if (notification === '') return null
-
-  return (
-    <div style={notificationStyle}>
-      {notification}
-    </div>
-  )
 }
 
 export default Notification

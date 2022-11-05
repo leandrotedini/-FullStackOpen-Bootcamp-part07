@@ -20,18 +20,17 @@ import {
 } from '@chakra-ui/react'
 
 const BlogForm = ({ isOpen, onClose }) => {
+  const [ buttonDisabled, setButtonDisabled ] = useState(true)
   const { reset: resetTitle, ...title } = useField('text')
   const { reset: resetAuthor, ...author } = useField('text')
   const { reset: resetUrl, ...url } = useField('text')
-  const [ buttonDisabled, setButtonDisabled ] = useState(true)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     setButtonDisabled(title.value === ''
       || author.value === ''
       || url.value === '')
   }, [title, author, url])
-
-  const dispatch = useDispatch()
 
   const closeModal = () => {
     resetTitle()
@@ -52,13 +51,16 @@ const BlogForm = ({ isOpen, onClose }) => {
     try {
       dispatch(createBlogs(newBlog))
       dispatch(setNotification({
-        notification: 'new blog created',
-        success: true
+        description: 'new blog created',
+        status: 'success'
       }))
 
       closeModal()
     } catch (exception) {
-      dispatch(setNotification(exception))
+      dispatch(setNotification({
+        description: exception,
+        status: 'error'
+      }))
     }
   }
 
