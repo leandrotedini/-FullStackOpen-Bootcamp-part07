@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectUserLogged } from '../../features/users/userLoggedSlice'
 import { useParams } from 'react-router-dom'
 import { deleteBlogs, fetchBlogsComments, selectBlogById } from '../../features/blogs/blogsSlice'
-import Blog from './Blog'
+import Blog, { BlogCard } from './Blog'
 import CommentList from '../Comments/CommentList'
 import {
   Box,
@@ -13,7 +13,6 @@ import {
   VStack,
   HStack,
   IconButton,
-  useColorModeValue,
   Divider,
 } from '@chakra-ui/react'
 import { DeleteIcon, ExternalLinkIcon } from '@chakra-ui/icons'
@@ -26,7 +25,6 @@ const BlogDetails = () => {
   const id = useParams().id
   const blog = useSelector(state => selectBlogById(state, id))
   const user = useSelector(selectUserLogged)
-  const bgColor = useColorModeValue('white', 'gray.900')
 
   useEffect(() => {
     dispatch(fetchBlogsComments(id))
@@ -41,14 +39,7 @@ const BlogDetails = () => {
   return (
     <Center>
       <VStack>
-        <Box
-          key={blog.id}
-          w={'full'}
-          bg={bgColor}
-          boxShadow={'2xl'}
-          rounded={'md'}
-          p={6}
-          overflow={'hidden'}>
+        <BlogCard key={blog.id}>
           <Blog blog={blog}/>
           <HStack
             align={'end'}
@@ -73,7 +64,7 @@ const BlogDetails = () => {
           <Box >
             <CommentList comments={blog.comments}/>
           </Box>
-        </Box>
+        </BlogCard>
       </VStack>
     </Center>
   )

@@ -2,22 +2,19 @@ import React, { useEffect } from 'react'
 import { Link as ReactRouterLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchBlogs, selectAllBlogs } from '../../features/blogs/blogsSlice'
-import { BlogTitle, BlogBody } from './Blog'
+import { BlogTitle, BlogBody, BlogCard } from './Blog'
 import {
-  Box,
   LinkOverlay,
   Heading,
   StackDivider,
   LinkBox,
   Stack,
   Container,
-  useColorModeValue,
 } from '@chakra-ui/react'
 
 const BlogsList = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(selectAllBlogs)
-  const bgColor = useColorModeValue('white', 'gray.900')
 
   useEffect(() => {
     dispatch(fetchBlogs())
@@ -35,21 +32,14 @@ const BlogsList = () => {
         direction={'column'}
       >
         {blogs.map(blog =>
-          <Box
-            key={blog.id}
-            w={'full'}
-            bg={bgColor}
-            boxShadow={'2xl'}
-            rounded={'md'}
-            p={6}
-            overflow={'hidden'}>
+          <BlogCard key={blog.id}>
             <LinkBox >
               <LinkOverlay as={ReactRouterLink} to={`/blogs/${blog.id}`}>
                 <BlogTitle title={blog.title}/>
               </LinkOverlay>
               <BlogBody blog={blog} />
             </LinkBox>
-          </Box>
+          </BlogCard>
         )}
       </Stack>
     </Container>

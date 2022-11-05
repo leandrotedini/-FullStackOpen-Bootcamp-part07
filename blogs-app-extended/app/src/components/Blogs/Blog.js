@@ -10,7 +10,8 @@ import {
   Avatar,
   IconButton,
   useColorModeValue,
-  Spacer
+  Spacer,
+  Box
 } from '@chakra-ui/react'
 
 
@@ -35,7 +36,6 @@ export const BlogTitle = ({ title }) => {
 }
 
 export const BlogBody = ({ blog }) => {
-  const dispatch = useDispatch()
 
   return(
     <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
@@ -49,15 +49,41 @@ export const BlogBody = ({ blog }) => {
       </Stack>
       <Spacer />
       <Flex align='end'>
-        <Text px={2}>{`${blog.likes} likes`}</Text>
-        <IconButton
-          icon={blog.likedByUser
-            ? <LikeHeartSocial />
-            : <LikeHeartSocialShape />}
-          onClick={() => dispatch(likeBlogs(blog.id))}
-        />
+        <BlogLikes blog={blog} />
       </Flex>
     </Stack>
+  )
+}
+
+export const BlogLikes = ({ blog }) => {
+  const dispatch = useDispatch()
+
+  return (
+    <>
+      <Text px={2}>{`${blog.likes} likes`}</Text>
+      <IconButton
+        icon={blog.likedByUser
+          ? <LikeHeartSocial />
+          : <LikeHeartSocialShape />}
+        onClick={() => dispatch(likeBlogs(blog.id))}
+      />
+    </>
+  )
+}
+
+export const BlogCard = ({ children }) => {
+  const bgColor = useColorModeValue('white', 'gray.900')
+
+  return (
+    <Box
+      w='full'
+      bg={bgColor}
+      boxShadow='2xl'
+      rounded='md'
+      p={6}
+      overflow='hidden'>
+      {children}
+    </Box>
   )
 }
 
